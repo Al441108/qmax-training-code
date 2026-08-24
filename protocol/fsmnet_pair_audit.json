@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "train_pairs": 227,
+    "val_pairs": 45,
+    "train_patients": 1,
+    "val_patients": 1,
+    "patient_overlap": 1,
+    "missing_pairs": 0,
+    "patient_mismatches": 0,
+    "modality_errors": 0,
+    "dimension_errors": 0,
+    "train_slices": 8332,
+    "val_slices": 1665
+  },
+  "overlap_patient_ids": [
+    ""
+  ],
+  "missing": [],
+  "patient_mismatches": [],
+  "modality_errors": [],
+  "dimension_errors": []
+}

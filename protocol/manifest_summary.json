@@ -1,0 +1,11 @@
+{
+  "grouping_unit": "fsmnet_public_pair_id",
+  "patient_id_status": "not_available_publicly",
+  "train_pairs": 227,
+  "test_pairs": 45,
+  "train_slices": 8332,
+  "test_slices": 1665,
+  "train_monitor_pairs": 16,
+  "train_monitor_slices": 571,
+  "train_test_volume_overlap": 0
+}

@@ -1,0 +1,6 @@
+name: fastmri311
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+prefix: /home/u6dm/albert44.u6dm/miniforge3/envs/fastmri311

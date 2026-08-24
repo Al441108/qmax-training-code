@@ -1,0 +1,42 @@
+# Raw data and downloaded archives
+data/
+datasets/
+repo/
+*.h5
+*.hdf5
+*.tar
+*.tar.gz
+*.tar.xz
+*.xz
+*.nii
+*.nii.gz
+*.npy
+*.npz
+
+# Checkpoints and experiment outputs
+outputs/
+logs/
+wandb/
+archive/
+*.pt
+*.pth
+*.ckpt
+*.out
+*.err
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Credentials
+.env
+*.pem
+*.key
+
+# Temporary and backup files
+*.tmp
+*.bak
+*~
+.DS_Store

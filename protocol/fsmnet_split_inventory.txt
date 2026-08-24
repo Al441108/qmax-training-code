@@ -1,0 +1,2 @@
+/lus/lfs1aip2/scratch/u6dm/albert44.u6dm/fastmri_project/singlecoil_qmax_benchmark/repo/FSMNet/data_split/singlecoil_train_split_less.csv
+/lus/lfs1aip2/scratch/u6dm/albert44.u6dm/fastmri_project/singlecoil_qmax_benchmark/repo/FSMNet/data_split/singlecoil_val_split_less.csv

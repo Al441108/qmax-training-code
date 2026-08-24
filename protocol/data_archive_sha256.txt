@@ -1,0 +1,1 @@
+a5c34b3d531a62db5856571b8e08b9a72f80467c28b9b8d99b46c4c339edc114  /lus/lfs1aip2/scratch/u6dm/albert44.u6dm/fastmri_project/singlecoil_qmax_benchmark/data/singlecoil_train_selected.zip
