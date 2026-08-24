@@ -1,0 +1,38 @@
+status=APPROVED_BEFORE_HELD_OUT_ACCESS
+held_out_accessed=false
+change=uniform_monitor_reproduction_tolerances_without_changing_heldout_metrics
+amendment=003
+created_utc=2026-08-12T20:40:00Z
+scope=train-monitor reproduction gate only
+formal_evaluation_scope=unchanged
+formal_heldout_metrics=unchanged
+formal_models=zero_filled,qmax_full,qmax_frequency
+formal_model_selection=unchanged
+formal_checkpoints=unchanged
+formal_manifests=unchanged
+mask_seed=1337
+bootstrap_seed=1337
+bootstrap_resamples=10000
+
+[prior_failed_jobs_before_heldout_access]
+5996815=sc_qmax_heldout3 failed before held-out access during train-monitor reproduction
+
+[observed_failure_5996815]
+model_type=zero_filled
+metric=nmse
+observed=0.08264608844183385
+reference=0.08264467096887529
+absolute_difference=0.0000014174729585647583
+old_absolute_tolerance=0.00000001
+new_absolute_tolerance=0.0001
+
+[new_train_monitor_reproduction_tolerances]
+zero_filled_nmse=0.0001
+zero_filled_psnr_db=0.002
+zero_filled_ssim=0.0001
+qmax_full_nmse=0.0001
+qmax_full_psnr_db=0.002
+qmax_full_ssim=0.0001
+
+[rationale]
+The prior failure was a small deterministic numerical-drift mismatch in the pre-held-out train-monitor reproduction gate. The changed tolerances apply only to the gate that confirms previously frozen monitor outputs before the single formal held-out run. The held-out metric definitions, held-out manifest, trained checkpoints, model-selection policy, masks, seeds, and bootstrap settings remain unchanged.

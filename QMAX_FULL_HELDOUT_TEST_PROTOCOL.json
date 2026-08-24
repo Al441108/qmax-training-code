@@ -1,0 +1,22 @@
+{
+  "protocol_version": "QMax-Full-heldout-test-package-v1",
+  "created_date": "2026-08-05",
+  "formal_model": "QMax-Full",
+  "formal_checkpoint_policy": "epoch60/model_last.pt",
+  "model_seeds": [42, 123, 2026],
+  "expected_test_patients": 34,
+  "test_mode": "actual-q / all-components-on only",
+  "test_conditions": ["clean correct pair"],
+  "primary_metrics": ["patient-level L1"],
+  "supportive_metrics": ["NMSE", "PSNR", "SSIM"],
+  "within_seed_aggregation": "patient-equal",
+  "across_seed_aggregation": "seed-equal mean and between-seed sample SD",
+  "hierarchical_bootstrap": "exploratory because only three prespecified seeds",
+  "forbidden": [
+    "test-best seed selection",
+    "test-driven epoch selection",
+    "component or q counterfactual search on test",
+    "checkpoint modification or retraining",
+    "overwriting existing held-out outputs"
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "protocol_version": "QMax-StageA-R8-R2-v2",
+  "status": "frozen-before-training",
+  "target": {
+    "contrast": "PD-FS",
+    "acceleration": 8
+  },
+  "auxiliary": {
+    "contrast": "PD",
+    "acceleration": 2,
+    "representation": "zero-filled magnitude image"
+  },
+  "arms": {
+    "P1": "QMax-Core",
+    "P2": "QMax-Core plus detached sampled-DC residual evidence"
+  },
+  "shared_architecture": {
+    "num_cascades": 12,
+    "chans": 18,
+    "pools": 4,
+    "sens_chans": 8,
+    "sens_pools": 4,
+    "controller_chans": 16,
+    "adapter_normalization": "InstanceNorm2d(affine=False)",
+    "initial_aux_alpha": 0.1,
+    "initial_gate_probability": 0.95
+  },
+  "qmax_core": {
+    "q_input": "existing PairReliabilityHead(F_target,U0)",
+    "q_observes": "unprocessed adapter output U0",
+    "stable_filter": {
+      "type": "fixed depthwise binomial Gaussian",
+      "kernel": [
+        [0.0625, 0.125, 0.0625],
+        [0.125, 0.25, 0.125],
+        [0.0625, 0.125, 0.0625]
+      ],
+      "padding": "reflect",
+      "requires_grad": false
+    },
+    "detail_selector_input": [
+      "F_target",
+      "B",
+      "H",
+      "abs(F_target-B)",
+      "F_target*B"
+    ],
+    "detail_gate": "2*sigmoid(K(Z))",
+    "detail_gate_initial": 1.0,
+    "alignment_input": [
+      "F_target",
+      "B",
+      "H",
+      "abs(F_target-B)",
+      "F_target*B"
+    ],
+    "alignment_initial": 0.0,
+    "direct": "m*q*alpha*U",
+    "correction_input": [
+      "F_direct",
+      "F_target",
+      "T",
+      "U",
+      "abs(F_direct-U)",
+      "F_direct*U"
+    ],
+    "correction": "m*q*0.1*tanh(CorrectionHead(input))",
+    "correction_initial": 0.0,
+    "correction_beta": 0.1
+  },
+  "qmax_full": {
+    "only_extra_variable": "sampled PD-FS DC residual evidence",
+    "formula": "abs(A^H[M(Ax-y)])",
+    "uses_ground_truth": false,
+    "detached": true,
+    "normalization": "per-sample RMS with epsilon 1e-8",
+    "scale_interpolation": "area",
+    "inputs": [
+      "detail selector",
+      "correction head"
+    ],
+    "excluded_inputs": [
+      "q head",
+      "multiplicative need gate",
+      "alignment head"
+    ],
+    "new_input_columns_initial": 0.0
+  },
+  "loss": {
+    "reconstruction": "0.7*clean_L1 + 0.3*corrupt_L1",
+    "lambda_reliability": 0.05,
+    "lambda_rank": 0.02,
+    "lambda_correction_gain": 0.2,
+    "correction_gain_margin_relative": 0.002,
+    "gain_reference": "same checkpoint with correction_off on clean PD"
+  },
+  "training": {
+    "seed": 42,
+    "batch_size": 4,
+    "gradient_accumulation": 1,
+    "epochs": 30,
+    "learning_rate": 0.0003,
+    "optimizer": "Adam",
+    "amp": true,
+    "checkpoint_for_structure_selection": "epoch30/model_last.pt",
+    "best_within_30_role": "supportive only"
+  },
+  "final_output_dc_contract": {
+    "type": "existing learned soft-DC VarNet update",
+    "hard_projection_after_final_cascade": false,
+    "strict_sampled_kspace_consistency_claimed": false,
+    "post_final_cascade_auxiliary_module": false
+  },
+  "corruption": {
+    "protocol": "QMax-R8-R2-per-sample-corruption-v1",
+    "key_fields": [
+      "global seed",
+      "epoch",
+      "patient ID",
+      "slice index",
+      "view index",
+      "occurrence index",
+      "stream ID"
+    ]
+  },
+  "counterfactuals": {
+    "components": [
+      "full",
+      "detail_neutral",
+      "alignment_off",
+      "correction_off"
+    ],
+    "full_only": [
+      "dc_on",
+      "dc_zero"
+    ],
+    "reliability": [
+      "actual-q",
+      "q=1",
+      "constant-q",
+      "missing"
+    ],
+    "constant_q_definition": "patient-equal mean actual q on the locked full-clean cohort"
+  },
+  "selection_hard_gates": {
+    "missing_direct_and_correction_exact_zero": true,
+    "actual_q_beats_q1_on_robustness_l1": "paired bootstrap 95% CI upper bound < 0 and patient majority",
+    "actual_q_beats_constant_q_on_robustness_l1": "paired bootstrap 95% CI upper bound < 0 and patient majority",
+    "q_clean_exceeds_q_corrupt": "on the same robustness cohort, correct q minus corrupt-composite q has paired bootstrap 95% CI lower bound > 0 and patient majority"
+  },
+  "selection_scope": {
+    "automatic_decision": "QMax-Core versus QMax-Full Stage-A mechanism selection",
+    "historical_fifth_p0": "bound and retained as a historical performance/fallback reference, but not represented as a paired 30-epoch deterministic-corruption arm",
+    "final_model_claim": "requires a separate same-manifest absolute-performance comparison against historical Fifth/P0; causal same-training-protocol claims require retraining P0"
+  }
+}
